@@ -2786,3 +2786,447 @@ export default function Prototype5() {
       </InfoCard>
     </div>
   );
+  const renderHomePage = () => (
+    <div className="space-y-6">
+      <InfoCard themeStyles={themeStyles} className="overflow-hidden">
+        <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
+          <div className="p-6 md:p-8">
+            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}>
+              <Sparkles className="h-4 w-4" />
+              Personalized discovery
+            </div>
+
+            <h1 className="mt-4 text-3xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+              Build your next chapter around the right place and people
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6" style={{ color: themeStyles.muted }}>
+              Explore off-grid, family, education, and intentional living projects. Take the adaptive
+              questionnaire to improve match quality and reveal smarter recommendations.
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() => setPage("questionnaire")}
+              >
+                <PenSquare className="mr-2 inline h-4 w-4" />
+                {questionnaireComplete ? "Review questionnaire" : "Start questionnaire"}
+              </ThemeButton>
+
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() => setPage("projects")}
+              >
+                <FolderKanban className="mr-2 inline h-4 w-4" />
+                Browse projects
+              </ThemeButton>
+            </div>
+          </div>
+
+          <div
+            className="border-l p-6 md:p-8"
+            style={{
+              backgroundColor: themeStyles.panel,
+              borderColor: themeStyles.border,
+            }}
+          >
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+              {[
+                {
+                  label: "Questionnaire progress",
+                  value: `${questionnaireProgressPercent}%`,
+                  icon: Compass,
+                },
+                {
+                  label: "Saved favorites",
+                  value: `${favoriteProjects.length}`,
+                  icon: Heart,
+                },
+                {
+                  label: "My projects",
+                  value: `${userProjects.length}`,
+                  icon: FolderKanban,
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border p-4"
+                  style={{
+                    backgroundColor: themeStyles.card,
+                    borderColor: themeStyles.border,
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm" style={{ color: themeStyles.muted }}>
+                      {item.label}
+                    </p>
+                    <item.icon className="h-4 w-4" style={{ color: themeStyles.primary }} />
+                  </div>
+                  <p className="mt-3 text-2xl font-semibold" style={{ color: themeStyles.text }}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </InfoCard>
+
+      <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+        <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-lg font-semibold" style={{ color: themeStyles.text }}>
+                Map preview
+              </h2>
+              <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
+                Click a marker to focus a project. Open the full map for a larger view.
+              </p>
+            </div>
+
+            <ThemeButton
+              themeStyles={themeStyles}
+              onClick={() => setFullscreenMapOpen(true)}
+            >
+              Full screen
+            </ThemeButton>
+          </div>
+
+          <div className="h-[360px] overflow-hidden rounded-3xl border"
+            style={{ borderColor: themeStyles.border }}>
+            <LeafletMap
+              projects={miniMapProjects}
+              highlightedIds={projectsPageHighlightedIds}
+              activeProjectId={activeMapProject?.id ?? null}
+              onSelectProject={(project) => {
+                setActiveMapProject(project);
+                addActivity(`Focused map on ${project.title}`);
+              }}
+              mode="mini"
+              isReady={leafletReady}
+            />
+          </div>
+
+          {activeMapProject ? (
+            <div
+              className="mt-4 rounded-2xl border p-4"
+              style={{
+                backgroundColor: themeStyles.panel,
+                borderColor: themeStyles.border,
+              }}
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-semibold" style={{ color: themeStyles.text }}>
+                    {activeMapProject.title}
+                  </p>
+                  <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
+                    {activeMapProject.location}
+                  </p>
+                </div>
+
+                <ThemeButton
+                  themeStyles={themeStyles}
+                  onClick={() => openProjectDetail(activeMapProject)}
+                >
+                  Open project
+                </ThemeButton>
+              </div>
+            </div>
+          ) : null}
+        </InfoCard>
+
+        <div className="space-y-6">
+          <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold" style={{ color: themeStyles.text }}>
+                Recommended for you
+              </h2>
+              <Star className="h-5 w-5" style={{ color: "#f59e0b" }} />
+            </div>
+
+            <div className="mt-4 space-y-4">
+              {(recommendedProjects.length > 0 ? recommendedProjects : sharedProjectsSeed.slice(0, 3)).map(
+                (project) => renderProjectCard(project, "shared")
+              )}
+            </div>
+          </InfoCard>
+
+          <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+            <h2 className="text-lg font-semibold" style={{ color: themeStyles.text }}>
+              Recent activity
+            </h2>
+
+            <div className="mt-4 space-y-3">
+              {recentActivity.map((item, index) => (
+                <div key={`${item}-${index}`} className="flex items-start gap-3">
+                  <div
+                    className="mt-1 rounded-full p-1.5"
+                    style={{
+                      backgroundColor: themeStyles.pill,
+                      color: themeStyles.primary,
+                    }}
+                  >
+                    <Clock3 className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="text-sm leading-6" style={{ color: themeStyles.muted }}>
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </InfoCard>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderFavoritesPage = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+          Favorites
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+          Your saved shared projects live here.
+        </p>
+      </div>
+
+      {favoriteProjects.length > 0 ? (
+        <div className="space-y-4">
+          {favoriteProjects.map((project) => renderProjectCard(project, "favorite"))}
+        </div>
+      ) : (
+        <InfoCard themeStyles={themeStyles} className="p-8 text-center">
+          <Heart className="mx-auto h-8 w-8" style={{ color: themeStyles.muted }} />
+          <p className="mt-4 text-base font-medium" style={{ color: themeStyles.text }}>
+            No favorites yet
+          </p>
+          <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+            Save projects from the Projects page and they will appear here.
+          </p>
+        </InfoCard>
+      )}
+    </div>
+  );
+
+  const renderProjectsPage = () => (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+            Projects
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+            Browse public projects or manage the ones you create.
+          </p>
+        </div>
+
+        <div className="flex gap-3">
+          <ThemeButton
+            themeStyles={themeStyles}
+            active={projectsTab === "projects"}
+            onClick={() => setProjectsTab("projects")}
+          >
+            Shared projects
+          </ThemeButton>
+          <ThemeButton
+            themeStyles={themeStyles}
+            active={projectsTab === "my_projects"}
+            onClick={() => setProjectsTab("my_projects")}
+          >
+            My projects
+          </ThemeButton>
+        </div>
+      </div>
+
+      {projectsTab === "projects" ? (
+        <>
+          <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="relative w-full max-w-xl">
+                <Search
+                  className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2"
+                  style={{ color: themeStyles.muted }}
+                />
+                <input
+                  value={projectSearchQuery}
+                  onChange={(e) => setProjectSearchQuery(e.target.value)}
+                  placeholder="Search by title, location, category, creator, or tag"
+                  className={`w-full rounded-2xl border py-3 pl-11 pr-4 text-sm outline-none ${placeholderClass}`}
+                  style={{
+                    backgroundColor: themeStyles.panel,
+                    color: themeStyles.text,
+                    borderColor: themeStyles.border,
+                  }}
+                />
+              </div>
+
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() => setFullscreenMapOpen(true)}
+              >
+                Open full map
+              </ThemeButton>
+            </div>
+
+            <div className="mt-5 h-[360px] overflow-hidden rounded-3xl border"
+              style={{ borderColor: themeStyles.border }}>
+              <LeafletMap
+                projects={fullscreenMapProjects}
+                highlightedIds={projectsPageHighlightedIds}
+                activeProjectId={activeMapProject?.id ?? null}
+                onSelectProject={(project) => setActiveMapProject(project)}
+                mode="mini"
+                isReady={leafletReady}
+              />
+            </div>
+          </InfoCard>
+
+          <div className="space-y-4">
+            {publicProjectsFiltered.map((project) => renderProjectCard(project, "shared"))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="text-sm" style={{ color: themeStyles.muted }}>
+              {userProjects.length} total · {publicProjectsCount} public
+            </div>
+
+            <ThemeButton
+              themeStyles={themeStyles}
+              onClick={() => setShowCreateForm((prev) => !prev)}
+            >
+              <Plus className="mr-2 inline h-4 w-4" />
+              {showCreateForm ? "Close form" : "Create project"}
+            </ThemeButton>
+          </div>
+
+          {showCreateForm ? (
+            <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Project title
+                  </label>
+                  <ThemeInput
+                    value={projectTitle}
+                    onChange={(e) => setProjectTitle(e.target.value)}
+                    placeholder="Ex: Desert Family Build Collective"
+                    themeStyles={themeStyles}
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Location label
+                  </label>
+                  <ThemeInput
+                    value={projectLocation}
+                    onChange={(e) => setProjectLocation(e.target.value)}
+                    placeholder="Ex: San Diego County, California"
+                    themeStyles={themeStyles}
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Category
+                  </label>
+                  <ThemeSelect
+                    value={projectCategory}
+                    onChange={(e) =>
+                      setProjectCategory(e.target.value as (typeof myProjectCategories)[number])
+                    }
+                    options={[...myProjectCategories]}
+                    placeholder="Select category"
+                    themeStyles={themeStyles}
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Visibility
+                  </label>
+                  <ThemeSelect
+                    value={projectVisibility}
+                    onChange={(e) =>
+                      setProjectVisibility(e.target.value as "private" | "public")
+                    }
+                    options={["private", "public"]}
+                    placeholder="Select visibility"
+                    themeStyles={themeStyles}
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Description
+                  </label>
+                  <ThemeInput
+                    value={projectDescription}
+                    onChange={(e) => setProjectDescription(e.target.value)}
+                    placeholder="Describe the project, its goals, who it is for, and what makes it special."
+                    themeStyles={themeStyles}
+                    multiline
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-sm font-medium" style={{ color: themeStyles.text }}>
+                    Tags
+                  </label>
+                  <ThemeInput
+                    value={projectTags}
+                    onChange={(e) => setProjectTags(e.target.value)}
+                    placeholder="family, off-grid, build, land, education"
+                    themeStyles={themeStyles}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap gap-3">
+                <button
+                  type="button"
+                  onClick={createProject}
+                  className="rounded-2xl px-5 py-3 text-sm font-medium transition"
+                  style={{
+                    backgroundColor: themeStyles.primary,
+                    color: themeStyles.primaryText,
+                  }}
+                >
+                  Save project
+                </button>
+
+                <ThemeButton
+                  themeStyles={themeStyles}
+                  onClick={() => setShowCreateForm(false)}
+                >
+                  Cancel
+                </ThemeButton>
+              </div>
+            </InfoCard>
+          ) : null}
+
+          {userProjects.length > 0 ? (
+            <div className="space-y-4">
+              {userProjects.map((project) => renderProjectCard(project, "mine"))}
+            </div>
+          ) : (
+            <InfoCard themeStyles={themeStyles} className="p-8 text-center">
+              <FolderKanban className="mx-auto h-8 w-8" style={{ color: themeStyles.muted }} />
+              <p className="mt-4 text-base font-medium" style={{ color: themeStyles.text }}>
+                No projects created yet
+              </p>
+              <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+                Create your first project to test the authoring flow.
+              </p>
+            </InfoCard>
+          )}
+        </>
+      )}
+    </div>
+  );
+  
