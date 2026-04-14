@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import {
   ArrowLeft,
   Bell,
@@ -30,7 +31,6 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import Script from "next/script";
 import {
   useEffect,
   useMemo,
@@ -42,6 +42,7 @@ import {
 
 type ThemeMode = "light" | "dark";
 type AppStage = "signin_details" | "signin_payment" | "signin_confirmation" | "app";
+
 type PageKey =
   | "home"
   | "favorites"
@@ -51,6 +52,7 @@ type PageKey =
   | "answers_summary"
   | "questionnaire"
   | "project_detail";
+
 type PlanKey = "starter" | "pro" | "skip";
 type ProjectsTabKey = "projects" | "my_projects";
 
@@ -295,7 +297,7 @@ const LOCATION_DATA: LocationData = {
         { name: "Skåne County", cities: ["Malmö"] },
       ],
     },
-     "United Kingdom": {
+    "United Kingdom": {
       regionLabel: "Nation / Region",
       cityLabel: "City",
       regions: [
@@ -669,6 +671,7 @@ const categoryOrder = [
 
 function uniqueProjectList(projects: SharedProject[]): SharedProject[] {
   const seen = new Set<number>();
+
   return projects.filter((project) => {
     if (seen.has(project.id)) return false;
     seen.add(project.id);
@@ -728,7 +731,7 @@ function getAdaptiveQuestions(
       id: "timeline",
       category: "Location + Timing",
       type: "select",
-      label: "How soon are you realistically hoping to make a move or join a project?",
+      label: "How soon are you realistically hoping to move or join a project?",
       options: [
         "Just researching",
         "Within 6-12 months",
@@ -797,7 +800,7 @@ function getAdaptiveQuestions(
       id: "community_style",
       category: "Lifestyle",
       type: "select",
-      label: "How much community interaction do you want in daily life?",
+      label: "How much community interaction do you want in everyday life?",
       options: [
         "Mostly private",
         "Small circle",
@@ -877,7 +880,7 @@ function getAdaptiveQuestions(
       id: "food_lifestyle",
       category: "Project Preferences",
       type: "select",
-      label: "Which lifestyle element matters most in the project’s daily culture?",
+      label: "Which daily culture element matters most to you?",
       options: [
         "Gardening / food growing",
         "Health / wellness",
@@ -946,7 +949,7 @@ function getAdaptiveQuestions(
       type: "textarea",
       label: `What are your biggest deal-breakers for a ${projectType.toLowerCase()} project?`,
       placeholder:
-        "For example: too isolated, too crowded, not enough privacy, bad school fit, unclear ownership...",
+        "For example: too isolated, too crowded, not enough privacy, poor school fit, unclear ownership...",
     },
     {
       id: "relocation_readiness",
@@ -974,7 +977,7 @@ function getAdaptiveQuestions(
 
 function ThemeButton({
   children,
-  active,
+  active = false,
   onClick,
   themeStyles,
   className = "",
@@ -1029,407 +1032,10 @@ function ThemeInput({
     },
   };
 
-  if (multiline) return <textarea rows={4} {...sharedProps} />;
-  return <input {...sharedProps} />;
-}
+  if (multiline) {
+    return <textarea rows={4} {...sharedProps} />;
+  }
 
-function ThemeSelect({
-  value,
-  onChange,
-  options,
-  placeholder,
-  themeStyles,
-}: {
-  value: string;
-  onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
-  options: string[];
-  placeholder: string;
-  themeStyles: ThemeStyles;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={onChange}
-      className="w-full rounded-2xl border px-4 py-3 text-sm outline-none"
-      style={{
-        backgroundColor: themeStyles.panel,
-        color: themeStyles.text,
-        borderColor: themeStyles.border,
-      }}
-    >
-      <option value="">{placeholder}</option>
-      {options.map((option) => (
-        <option key={option} value={option}>
-          {option}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-function uniqueProjectList(projects: SharedProject[]): SharedProject[] {
-  const seen = new Set<number>();
-  return projects.filter((project) => {
-    if (seen.has(project.id)) return false;
-    seen.add(project.id);
-    return true;
-  });
-}
-
-function getAdaptiveQuestions(
-  currentLocation: string,
-  answers: Record<string, string>
-): Question[] {
-  const locationLower = currentLocation.toLowerCase();
-  const inCalifornia =
-    locationLower.includes("california") ||
-    locationLower.includes("san diego") ||
-    locationLower.includes("los angeles");
-
-  const householdType = answers.household_type || "";
-  const projectType = answers.project_type || "community";
-  const primaryStrength = answers.primary_strength || "your main strength";
-  const timeline = answers.timeline || "sometime soon";
-
-  const shouldAskHouseholdSize =
-    householdType !== "Individual" && householdType !== "Couple";
-
-  const householdSizeLabel =
-    householdType === "Friends / group"
-      ? "How many people are in your group?"
-      : "How many people are in your household?";
-
-  return [
-    {
-      id: "household_type",
-      category: "Status",
-      type: "select",
-      label: "Which best describes your current household status?",
-      options: [
-        "Individual",
-        "Couple",
-        "Family with kids",
-        "Family without kids",
-        "Friends / group",
-      ],
-    },
-    ...(shouldAskHouseholdSize
-      ? [
-          {
-            id: "household_size",
-            category: "Status",
-            type: "select",
-            label: householdSizeLabel,
-            options: ["1", "2", "3-4", "5-6", "7+"],
-          } as Question,
-        ]
-      : []),
-    {
-      id: "timeline",
-      category: "Location + Timing",
-      type: "select",
-      label: "How soon are you realistically hoping to make a move or join a project?",
-      options: [
-        "Just researching",
-        "Within 6-12 months",
-        "Within 3-6 months",
-        "Within 1-3 months",
-        "Ready now",
-      ],
-    },
-    {
-      id: "distance_preference",
-      category: "Location + Timing",
-      type: "select",
-      label: `How far from ${currentLocation || "your current location"} would you consider going?`,
-      options: inCalifornia
-        ? [
-            "Stay very local",
-            "Anywhere in California",
-            "Western U.S.",
-            "Anywhere in the U.S.",
-            "Open internationally",
-          ]
-        : [
-            "Stay very local",
-            "Within my region",
-            "Anywhere in my state",
-            "Anywhere in the U.S.",
-            "Open internationally",
-          ],
-    },
-    {
-      id: "project_type",
-      category: "Project Preferences",
-      type: "select",
-      label: "What kind of project are you most drawn to right now?",
-      options: [
-        "Off-grid build",
-        "Family community",
-        "Creative homestead",
-        "Regenerative farm",
-        "Remote-work community",
-        "Education village",
-      ],
-    },
-    {
-      id: "climate_preference",
-      category: "Project Preferences",
-      type: "select",
-      label: `Based on being in ${currentLocation || "your location"}, what climate or environment feels best for you?`,
-      options: inCalifornia
-        ? [
-            "Coastal / mild",
-            "Mountain / forest",
-            "Desert / dry",
-            "Rural farmland",
-            "No strong preference",
-          ]
-        : [
-            "Warm / sunny",
-            "Cool / forested",
-            "Dry / desert",
-            "Rural farmland",
-            "No strong preference",
-          ],
-    },
-    {
-      id: "community_style",
-      category: "Lifestyle",
-      type: "select",
-      label: "How much community interaction do you want in daily life?",
-      options: [
-        "Mostly private",
-        "Small circle",
-        "Balanced mix",
-        "Highly communal",
-        "Flexible / depends on project",
-      ],
-    },
-    {
-      id: "housing_style",
-      category: "Lifestyle",
-      type: "select",
-      label: `For a ${projectType.toLowerCase()} setup, what housing style feels like the best fit?`,
-      options: [
-        "Private house",
-        "Cabin / tiny home",
-        "Shared land with separate homes",
-        "Intentional shared housing",
-        "Still exploring",
-      ],
-    },
-    {
-      id: "work_style",
-      category: "Work + Finances",
-      type: "select",
-      label: "What best describes your current work or income style?",
-      options: [
-        "Remote work",
-        "Local job / business",
-        "Self-employed",
-        "Homemaker / caretaker",
-        "Mixed / transitioning",
-      ],
-    },
-    {
-      id: "budget_status",
-      category: "Work + Finances",
-      type: "select",
-      label: "What is your current financial readiness for joining or building something?",
-      options: [
-        "Very limited right now",
-        "Modest budget",
-        "Can contribute steadily",
-        "Can invest meaningfully",
-        "Need flexible arrangements",
-      ],
-    },
-    {
-      id: "build_readiness",
-      category: "Skills + Abilities",
-      type: "select",
-      label: "How ready are you for physical building, setup, or hands-on project work?",
-      options: [
-        "Prefer non-physical roles",
-        "Can help lightly",
-        "Can help regularly",
-        "Strong hands-on contributor",
-        "Depends on the project",
-      ],
-    },
-    {
-      id: "family_fit",
-      category: "Lifestyle",
-      type: "select",
-      label: householdType.toLowerCase().includes("family")
-        ? "What kind of child and family support matters most to you?"
-        : "How important is it that the project be family-friendly or child-compatible?",
-      options: [
-        "Very important",
-        "Helpful but not essential",
-        "Neutral",
-        "Only if the fit is right",
-        "Not important",
-      ],
-    },
-    {
-      id: "food_lifestyle",
-      category: "Project Preferences",
-      type: "select",
-      label: "Which lifestyle element matters most in the project’s daily culture?",
-      options: [
-        "Gardening / food growing",
-        "Health / wellness",
-        "Learning / education",
-        "Creativity / arts",
-        "Building / making",
-      ],
-    },
-    {
-      id: "accessibility_needs",
-      category: "Status",
-      type: "select",
-      label: "What best describes your accessibility, health, or energy considerations right now?",
-      options: [
-        "No major constraints",
-        "Need moderate flexibility",
-        "Need strong accessibility support",
-        "Need lower-physical-intensity roles",
-        "Prefer not to say",
-      ],
-    },
-    {
-      id: "primary_strength",
-      category: "Skills + Abilities",
-      type: "select",
-      label: "What is your strongest contribution to a community or project?",
-      options: [
-        "Teaching / mentoring",
-        "Building / construction",
-        "Gardening / farming",
-        "Operations / organizing",
-        "Creative / arts",
-        "Wellness / care",
-      ],
-    },
-    {
-      id: "secondary_strength",
-      category: "Skills + Abilities",
-      type: "select",
-      label: `What is your second-strongest contribution alongside ${primaryStrength.toLowerCase()}?`,
-      options: [
-        "Teaching / mentoring",
-        "Building / construction",
-        "Gardening / farming",
-        "Operations / organizing",
-        "Creative / arts",
-        "Wellness / care",
-      ],
-    },
-    {
-      id: "role_preference",
-      category: "Commitment + Fit",
-      type: "select",
-      label: "What role do you naturally want in a community?",
-      options: [
-        "Leader / initiator",
-        "Reliable builder",
-        "Organizer / systems person",
-        "Caregiver / support role",
-        "Explorer / still figuring it out",
-      ],
-    },
-    {
-      id: "deal_breakers",
-      category: "Commitment + Fit",
-      type: "textarea",
-      label: `What are your biggest deal-breakers for a ${projectType.toLowerCase()} project?`,
-      placeholder:
-        "For example: too isolated, too crowded, not enough privacy, bad school fit, unclear ownership...",
-    },
-    {
-      id: "relocation_readiness",
-      category: "Location + Timing",
-      type: "select",
-      label: `Given your timeline of ${timeline.toLowerCase()}, how ready are you for real-world relocation steps?`,
-      options: [
-        "Not ready yet",
-        "Collecting information",
-        "Can start planning soon",
-        "Actively preparing",
-        "Already taking action",
-      ],
-    },
-    {
-      id: "success_definition",
-      category: "Commitment + Fit",
-      type: "textarea",
-      label: "What would success look like for you one year after joining the right project?",
-      placeholder:
-        "Describe the life, rhythm, environment, and sense of belonging you want.",
-    },
-  ];
-}
-
-function ThemeButton({
-  children,
-  active,
-  onClick,
-  themeStyles,
-  className = "",
-  type = "button",
-}: {
-  children: ReactNode;
-  active?: boolean;
-  onClick?: () => void;
-  themeStyles: ThemeStyles;
-  className?: string;
-  type?: "button" | "submit";
-}) {
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      className={`rounded-2xl border px-4 py-2.5 text-sm font-medium transition hover:opacity-95 ${className}`}
-      style={{
-        backgroundColor: active ? themeStyles.primary : themeStyles.card,
-        color: active ? themeStyles.primaryText : themeStyles.text,
-        borderColor: active ? themeStyles.primary : themeStyles.border,
-      }}
-    >
-      {children}
-    </button>
-  );
-}
-
-function ThemeInput({
-  value,
-  onChange,
-  placeholder,
-  themeStyles,
-  multiline = false,
-}: {
-  value: string;
-  onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  placeholder?: string;
-  themeStyles: ThemeStyles;
-  multiline?: boolean;
-}) {
-  const sharedProps = {
-    value,
-    onChange,
-    placeholder,
-    className:
-      "w-full rounded-2xl border px-4 py-3 text-sm outline-none placeholder:text-slate-400",
-    style: {
-      backgroundColor: themeStyles.panel,
-      color: themeStyles.text,
-      borderColor: themeStyles.border,
-    },
-  };
-
-  if (multiline) return <textarea rows={4} {...sharedProps} />;
   return <input {...sharedProps} />;
 }
 
@@ -1676,8 +1282,8 @@ function LeafletMap({
     };
 
     requestAnimationFrame(invalidate);
-    setTimeout(invalidate, 100);
-    setTimeout(invalidate, 300);
+    setTimeout(invalidate, 120);
+    setTimeout(invalidate, 320);
 
     if (typeof ResizeObserver !== "undefined") {
       resizeObserverRef.current = new ResizeObserver(() => {
@@ -1846,8 +1452,7 @@ export default function Prototype5() {
         pill: "#eef4ff",
         shadow: "0 18px 40px rgba(15,23,42,0.08)",
       };
-    const shellTextClass = isDark ? "text-slate-100" : "text-slate-900";
-  const mutedTextClass = isDark ? "text-slate-300" : "text-slate-600";
+
   const placeholderClass = isDark
     ? "placeholder:text-slate-500"
     : "placeholder:text-slate-400";
@@ -1898,7 +1503,7 @@ export default function Prototype5() {
   const planLabel = useMemo(() => {
     if (selectedPlan === "starter") return "Starter Plan — $1";
     if (selectedPlan === "pro") return "Pro Plan — $10/month";
-    if (selectedPlan === "skip") return "Skip for Now — prototype access";
+    if (selectedPlan === "skip") return "Skip for now — prototype access";
     return "No plan selected";
   }, [selectedPlan]);
 
@@ -1987,7 +1592,9 @@ export default function Prototype5() {
         const reasons: string[] = [];
 
         tokens.forEach((token) => {
-          if (token.length > 2 && blob.includes(token)) score += 1;
+          if (token.length > 2 && blob.includes(token)) {
+            score += 1;
+          }
         });
 
         if (project.state === selectedRegion && project.country === selectedCountry) {
@@ -2075,7 +1682,9 @@ export default function Prototype5() {
     if (!fullscreenMapOpen) return;
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFullscreenMapOpen(false);
+      if (event.key === "Escape") {
+        setFullscreenMapOpen(false);
+      }
     };
 
     const previousOverflow = document.body.style.overflow;
@@ -2090,10 +1699,14 @@ export default function Prototype5() {
 
   useEffect(() => {
     if (!activeMapProject) return;
+
     const stillExists = fullscreenMapProjects.some(
       (project) => project.id === activeMapProject.id
     );
-    if (!stillExists) setActiveMapProject(null);
+
+    if (!stillExists) {
+      setActiveMapProject(null);
+    }
   }, [fullscreenMapProjects, activeMapProject]);
 
   const addActivity = (entry: string) => {
@@ -2134,26 +1747,27 @@ export default function Prototype5() {
     const newProject: UserProject = {
       id: Date.now(),
       title: projectTitle.trim(),
-      city: selectedCity || "Custom",
+      creator: email || "You",
+      category: projectCategory,
+      location: projectLocation.trim(),
       state: selectedRegion || "Custom",
       country: selectedCountry || "Custom",
       continent: selectedContinent || "Custom",
-      location: projectLocation.trim(),
-      category: projectCategory,
+      city: selectedCity || "Custom",
       description: projectDescription.trim(),
       tags: projectTags
         .split(",")
         .map((tag) => tag.trim())
         .filter(Boolean),
-      visibility: projectVisibility,
-      creator: email || "You",
-      thumbnail: projectTitle.slice(0, 2).toUpperCase(),
+      thumbnail: projectTitle.trim().slice(0, 2).toUpperCase(),
       lat: 0,
       lng: 0,
+      visibility: projectVisibility,
     };
 
     setUserProjects((prev) => [newProject, ...prev]);
     addActivity(`Created ${newProject.title}`);
+
     setProjectTitle("");
     setProjectLocation("");
     setProjectCategory("Community Living");
@@ -2204,7 +1818,8 @@ export default function Prototype5() {
       <LeafletStyles />
     </>
   );
-    const renderProjectCard = (
+
+  const renderProjectCard = (
     project: Project,
     source: "shared" | "mine" | "favorite" = "shared"
   ) => {
@@ -2220,9 +1835,9 @@ export default function Prototype5() {
         className="p-5"
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
+          <div className="flex min-w-0 items-start gap-4">
             <div
-              className="flex h-12 w-12 items-center justify-center rounded-2xl text-sm font-semibold"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-sm font-semibold"
               style={{
                 backgroundColor: themeStyles.pill,
                 color: themeStyles.text,
@@ -2231,7 +1846,7 @@ export default function Prototype5() {
               {project.thumbnail || project.title.slice(0, 2).toUpperCase()}
             </div>
 
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-base font-semibold" style={{ color: themeStyles.text }}>
                   {project.title}
@@ -2344,8 +1959,10 @@ export default function Prototype5() {
       <InfoCard themeStyles={themeStyles} className="overflow-hidden">
         <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="p-6 md:p-8 lg:p-10">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}>
+            <div
+              className="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}
+            >
               <Sparkles className="h-4 w-4" />
               Prototype 5
             </div>
@@ -2355,12 +1972,15 @@ export default function Prototype5() {
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6" style={{ color: themeStyles.muted }}>
               Start with your contact details and current location so the prototype can tailor
-              projects, maps, and recommendations around you.
+              recommendations, nearby projects, and map views around you.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <Mail className="h-4 w-4" />
                   Email
                 </label>
@@ -2373,7 +1993,10 @@ export default function Prototype5() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <Phone className="h-4 w-4" />
                   Phone
                 </label>
@@ -2386,7 +2009,10 @@ export default function Prototype5() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <Globe className="h-4 w-4" />
                   Continent
                 </label>
@@ -2400,7 +2026,10 @@ export default function Prototype5() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <MapPin className="h-4 w-4" />
                   Country
                 </label>
@@ -2414,7 +2043,10 @@ export default function Prototype5() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <MapPin className="h-4 w-4" />
                   {regionLabel}
                 </label>
@@ -2428,7 +2060,10 @@ export default function Prototype5() {
               </div>
 
               <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium" style={{ color: themeStyles.text }}>
+                <label
+                  className="mb-2 flex items-center gap-2 text-sm font-medium"
+                  style={{ color: themeStyles.text }}
+                >
                   <MapPin className="h-4 w-4" />
                   {cityLabel}
                 </label>
@@ -2446,7 +2081,9 @@ export default function Prototype5() {
               <button
                 type="button"
                 onClick={() => {
-                  if (signInDetailsReady) setAppStage("signin_payment");
+                  if (signInDetailsReady) {
+                    setAppStage("signin_payment");
+                  }
                 }}
                 className="rounded-2xl px-5 py-3 text-sm font-medium transition"
                 style={{
@@ -2460,7 +2097,7 @@ export default function Prototype5() {
               </button>
 
               <span className="text-sm" style={{ color: themeStyles.muted }}>
-                Required to continue: email, phone, continent, country, region, and city
+                Required: email, phone, continent, country, region, and city
               </span>
             </div>
           </div>
@@ -2481,48 +2118,52 @@ export default function Prototype5() {
                 {
                   icon: Compass,
                   title: "Location-aware recommendations",
-                  text: "The prototype uses your selected location to bias matching, nearby projects, and map defaults.",
+                  text: "The prototype uses your selected location to improve matching, nearby projects, and map defaults.",
                 },
                 {
                   icon: Users,
                   title: "Better project fit",
-                  text: "Your sign-in details carry through the questionnaire, saved account info, and recommendations.",
+                  text: "Your sign-in details carry into the questionnaire, saved account info, and recommendations.",
                 },
                 {
                   icon: Lock,
                   title: "Prototype-safe onboarding",
-                  text: "This flow is for testing structure, not live production billing or authentication.",
+                  text: "This flow is meant for interface testing, not live production billing or authentication.",
                 },
-              ].map((item) => (
-                <div
-                  key={item.title}
-                  className="rounded-2xl border p-4"
-                  style={{
-                    backgroundColor: themeStyles.card,
-                    borderColor: themeStyles.border,
-                  }}
-                >
-                  <div className="flex items-start gap-3">
-                    <div
-                      className="mt-0.5 rounded-xl p-2"
-                      style={{
-                        backgroundColor: themeStyles.pill,
-                        color: themeStyles.primary,
-                      }}
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold" style={{ color: themeStyles.text }}>
-                        {item.title}
-                      </p>
-                      <p className="mt-1 text-sm leading-6" style={{ color: themeStyles.muted }}>
-                        {item.text}
-                      </p>
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border p-4"
+                    style={{
+                      backgroundColor: themeStyles.card,
+                      borderColor: themeStyles.border,
+                    }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div
+                        className="mt-0.5 rounded-xl p-2"
+                        style={{
+                          backgroundColor: themeStyles.pill,
+                          color: themeStyles.primary,
+                        }}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold" style={{ color: themeStyles.text }}>
+                          {item.title}
+                        </p>
+                        <p className="mt-1 text-sm leading-6" style={{ color: themeStyles.muted }}>
+                          {item.text}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {currentLocation ? (
@@ -2552,8 +2193,10 @@ export default function Prototype5() {
       <InfoCard themeStyles={themeStyles} className="p-6 md:p-8 lg:p-10">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}>
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}
+            >
               <CreditCard className="h-4 w-4" />
               Step 2
             </div>
@@ -2561,7 +2204,7 @@ export default function Prototype5() {
               Choose a prototype access plan
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6" style={{ color: themeStyles.muted }}>
-              This screen is structured like a real subscription flow, but it is still a prototype.
+              This step is shaped like a real subscription flow, but it remains part of the prototype.
             </p>
           </div>
 
@@ -2687,7 +2330,9 @@ export default function Prototype5() {
           <button
             type="button"
             onClick={() => {
-              if (signInPaymentReady) setAppStage("signin_confirmation");
+              if (signInPaymentReady) {
+                setAppStage("signin_confirmation");
+              }
             }}
             className="rounded-2xl px-5 py-3 text-sm font-medium transition"
             style={{
@@ -2721,13 +2366,16 @@ export default function Prototype5() {
               You’re ready to enter the app
             </h1>
             <p className="mt-3 text-sm leading-6" style={{ color: themeStyles.muted }}>
-              Your sign-in details, location, and plan selection are set for the prototype flow.
+              Your sign-in details, location, and plan choice are now set for the prototype flow.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
               <div
                 className="rounded-2xl border p-4"
-                style={{ backgroundColor: themeStyles.panel, borderColor: themeStyles.border }}
+                style={{
+                  backgroundColor: themeStyles.panel,
+                  borderColor: themeStyles.border,
+                }}
               >
                 <p className="text-xs uppercase tracking-[0.2em]" style={{ color: themeStyles.muted }}>
                   Contact
@@ -2742,7 +2390,10 @@ export default function Prototype5() {
 
               <div
                 className="rounded-2xl border p-4"
-                style={{ backgroundColor: themeStyles.panel, borderColor: themeStyles.border }}
+                style={{
+                  backgroundColor: themeStyles.panel,
+                  borderColor: themeStyles.border,
+                }}
               >
                 <p className="text-xs uppercase tracking-[0.2em]" style={{ color: themeStyles.muted }}>
                   Location + Plan
@@ -2786,13 +2437,16 @@ export default function Prototype5() {
       </InfoCard>
     </div>
   );
+
   const renderHomePage = () => (
     <div className="space-y-6">
       <InfoCard themeStyles={themeStyles} className="overflow-hidden">
         <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="p-6 md:p-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
-              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}>
+            <div
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold"
+              style={{ backgroundColor: themeStyles.pill, color: themeStyles.primary }}
+            >
               <Sparkles className="h-4 w-4" />
               Personalized discovery
             </div>
@@ -2801,8 +2455,8 @@ export default function Prototype5() {
               Build your next chapter around the right place and people
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6" style={{ color: themeStyles.muted }}>
-              Explore off-grid, family, education, and intentional living projects. Take the adaptive
-              questionnaire to improve match quality and reveal smarter recommendations.
+              Explore off-grid, family, education, and intentional living projects. Complete the adaptive
+              questionnaire to improve match quality and surface smarter recommendations.
             </p>
 
             <div className="mt-6 flex flex-wrap gap-3">
@@ -2848,26 +2502,30 @@ export default function Prototype5() {
                   value: `${userProjects.length}`,
                   icon: FolderKanban,
                 },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-2xl border p-4"
-                  style={{
-                    backgroundColor: themeStyles.card,
-                    borderColor: themeStyles.border,
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm" style={{ color: themeStyles.muted }}>
-                      {item.label}
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border p-4"
+                    style={{
+                      backgroundColor: themeStyles.card,
+                      borderColor: themeStyles.border,
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm" style={{ color: themeStyles.muted }}>
+                        {item.label}
+                      </p>
+                      <Icon className="h-4 w-4" style={{ color: themeStyles.primary }} />
+                    </div>
+                    <p className="mt-3 text-2xl font-semibold" style={{ color: themeStyles.text }}>
+                      {item.value}
                     </p>
-                    <item.icon className="h-4 w-4" style={{ color: themeStyles.primary }} />
                   </div>
-                  <p className="mt-3 text-2xl font-semibold" style={{ color: themeStyles.text }}>
-                    {item.value}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
@@ -2893,8 +2551,10 @@ export default function Prototype5() {
             </ThemeButton>
           </div>
 
-          <div className="h-[360px] overflow-hidden rounded-3xl border"
-            style={{ borderColor: themeStyles.border }}>
+          <div
+            className="h-[360px] overflow-hidden rounded-3xl border"
+            style={{ borderColor: themeStyles.border }}
+          >
             <LeafletMap
               projects={miniMapProjects}
               highlightedIds={projectsPageHighlightedIds}
@@ -3019,7 +2679,7 @@ export default function Prototype5() {
             Projects
           </h1>
           <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
-            Browse public projects or manage the ones you create.
+            Browse public projects or manage the projects you create.
           </p>
         </div>
 
@@ -3071,8 +2731,10 @@ export default function Prototype5() {
               </ThemeButton>
             </div>
 
-            <div className="mt-5 h-[360px] overflow-hidden rounded-3xl border"
-              style={{ borderColor: themeStyles.border }}>
+            <div
+              className="mt-5 h-[360px] overflow-hidden rounded-3xl border"
+              style={{ borderColor: themeStyles.border }}
+            >
               <LeafletMap
                 projects={fullscreenMapProjects}
                 highlightedIds={projectsPageHighlightedIds}
@@ -3247,7 +2909,7 @@ export default function Prototype5() {
               Theme mode
             </p>
             <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
-              Toggle between light and dark interface states.
+              Switch between light and dark interface states.
             </p>
           </div>
 
@@ -3260,6 +2922,7 @@ export default function Prototype5() {
               <Sun className="mr-2 inline h-4 w-4" />
               Light
             </ThemeButton>
+
             <ThemeButton
               themeStyles={themeStyles}
               active={theme === "dark"}
@@ -3290,7 +2953,9 @@ export default function Prototype5() {
             style={{
               backgroundColor: notificationsEnabled ? themeStyles.primary : themeStyles.card,
               color: notificationsEnabled ? themeStyles.primaryText : themeStyles.text,
-              border: `1px solid ${notificationsEnabled ? themeStyles.primary : themeStyles.border}`,
+              border: `1px solid ${
+                notificationsEnabled ? themeStyles.primary : themeStyles.border
+              }`,
             }}
           >
             {notificationsEnabled ? "Enabled" : "Disabled"}
@@ -3409,7 +3074,7 @@ export default function Prototype5() {
             Adaptive questionnaire
           </h1>
           <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
-            The questions change based on your location and earlier answers.
+            The questions shift based on your location and earlier answers.
           </p>
         </div>
 
@@ -3539,7 +3204,7 @@ export default function Prototype5() {
       <div className="space-y-6">
         <ThemeButton
           themeStyles={themeStyles}
-          onClick={() => setPage(isUserProject ? "projects" : "projects")}
+          onClick={() => setPage("projects")}
         >
           <ArrowLeft className="mr-2 inline h-4 w-4" />
           Back to projects
@@ -3872,14 +3537,15 @@ export default function Prototype5() {
         {fullscreenMapOpen ? (
           <div className="fixed inset-0 z-[1000] bg-slate-950/80 p-3 md:p-6">
             <div className="flex h-full flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
-              <div className="flex items-center justify-between border-b px-4 py-3 md:px-6"
-                style={{ borderColor: "#e2e8f0" }}>
+              <div
+                className="flex items-center justify-between border-b px-4 py-3 md:px-6"
+                style={{ borderColor: "#e2e8f0" }}
+              >
                 <div>
-                  <p className="text-base font-semibold text-slate-900">
-                    Project map
-                  </p>
+                  <p className="text-base font-semibold text-slate-900">Project map</p>
                   <p className="mt-1 text-sm text-slate-500">
-                    {fullscreenMapProjects.length} visible project{fullscreenMapProjects.length === 1 ? "" : "s"}
+                    {fullscreenMapProjects.length} visible project
+                    {fullscreenMapProjects.length === 1 ? "" : "s"}
                   </p>
                 </div>
 
@@ -3904,8 +3570,10 @@ export default function Prototype5() {
                   />
                 </div>
 
-                <div className="overflow-y-auto border-l bg-slate-50 p-4 md:p-5"
-                  style={{ borderColor: "#e2e8f0" }}>
+                <div
+                  className="overflow-y-auto border-l bg-slate-50 p-4 md:p-5"
+                  style={{ borderColor: "#e2e8f0" }}
+                >
                   <div className="space-y-3">
                     {fullscreenMapProjects.map((project) => {
                       const active = activeMapProject?.id === project.id;
@@ -3937,6 +3605,7 @@ export default function Prototype5() {
                       <p className="mt-2 text-sm leading-6 text-slate-600">
                         {activeMapProject.description}
                       </p>
+
                       <div className="mt-4">
                         <button
                           type="button"
