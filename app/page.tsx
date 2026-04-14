@@ -304,7 +304,7 @@ const LOCATION_DATA: LocationData = {
       ],
     },
   },
-  "North America": {
+  "North America", {
     Bahamas: {
       regionLabel: "Island / District",
       cityLabel: "City / Town",
