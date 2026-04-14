@@ -247,6 +247,161 @@ const LOCATION_DATA: LocationData = {
         { name: "Provence-Alpes-Côte d'Azur", cities: ["Marseille", "Nice"] },
       ],
     },
+     "North America": {
+    Bahamas: {
+      regionLabel: "Island / District",
+      cityLabel: "City / Town",
+      regions: [
+        { name: "New Providence", cities: ["Nassau"] },
+        { name: "Grand Bahama", cities: ["Freeport"] },
+      ],
+    },
+    Canada: {
+      regionLabel: "Province",
+      cityLabel: "City",
+      regions: [
+        { name: "Ontario", cities: ["Toronto", "Ottawa"] },
+        { name: "British Columbia", cities: ["Vancouver", "Victoria"] },
+        { name: "Quebec", cities: ["Montreal"] },
+      ],
+    },
+    "Costa Rica": {
+      regionLabel: "Province",
+      cityLabel: "City",
+      regions: [
+        { name: "San José", cities: ["San José"] },
+        { name: "Guanacaste", cities: ["Liberia", "Tamarindo"] },
+      ],
+    },
+    "Dominican Republic": {
+      regionLabel: "Province",
+      cityLabel: "City",
+      regions: [
+        { name: "Distrito Nacional", cities: ["Santo Domingo"] },
+        { name: "La Altagracia", cities: ["Punta Cana"] },
+      ],
+    },
+    Guatemala: {
+      regionLabel: "Department",
+      cityLabel: "City",
+      regions: [
+        { name: "Guatemala", cities: ["Guatemala City"] },
+        { name: "Sacatepéquez", cities: ["Antigua Guatemala"] },
+      ],
+    },
+    Jamaica: {
+      regionLabel: "Parish",
+      cityLabel: "City / Town",
+      regions: [
+        { name: "Kingston", cities: ["Kingston"] },
+        { name: "Saint James", cities: ["Montego Bay"] },
+      ],
+    },
+    Mexico: {
+      regionLabel: "State",
+      cityLabel: "City",
+      regions: [
+        { name: "Mexico City", cities: ["Mexico City"] },
+        { name: "Jalisco", cities: ["Guadalajara", "Puerto Vallarta"] },
+        { name: "Nuevo León", cities: ["Monterrey"] },
+      ],
+    },
+    Panama: {
+      regionLabel: "Province",
+      cityLabel: "City",
+      regions: [
+        { name: "Panamá", cities: ["Panama City"] },
+        { name: "Chiriquí", cities: ["David", "Boquete"] },
+      ],
+    },
+    "United States": {
+      regionLabel: "State",
+      cityLabel: "City",
+      regions: [
+        { name: "California", cities: ["San Diego", "Los Angeles", "San Francisco", "Joshua Tree"] },
+        { name: "Texas", cities: ["Austin", "Dallas", "Houston"] },
+        { name: "New York", cities: ["New York City", "Buffalo"] },
+        { name: "Florida", cities: ["Miami", "Orlando"] },
+        { name: "Washington", cities: ["Seattle"] },
+        { name: "Oregon", cities: ["Portland"] },
+        { name: "Colorado", cities: ["Denver", "Boulder"] },
+      ],
+    },
+  },
+  Oceania: {
+    Australia: {
+      regionLabel: "State / Territory",
+      cityLabel: "City",
+      regions: [
+        { name: "New South Wales", cities: ["Sydney"] },
+        { name: "Victoria", cities: ["Melbourne"] },
+        { name: "Queensland", cities: ["Brisbane"] },
+      ],
+    },
+    Fiji: {
+      regionLabel: "Division",
+      cityLabel: "City / Town",
+      regions: [
+        { name: "Central Division", cities: ["Suva"] },
+        { name: "Western Division", cities: ["Nadi"] },
+      ],
+    },
+    "New Zealand": {
+      regionLabel: "Region",
+      cityLabel: "City",
+      regions: [
+        { name: "Auckland", cities: ["Auckland"] },
+        { name: "Wellington", cities: ["Wellington"] },
+      ],
+    },
+  },
+  "South America": {
+    Argentina: {
+      regionLabel: "Province",
+      cityLabel: "City",
+      regions: [
+        { name: "Buenos Aires", cities: ["Buenos Aires"] },
+        { name: "Córdoba", cities: ["Córdoba"] },
+      ],
+    },
+    Brazil: {
+      regionLabel: "State",
+      cityLabel: "City",
+      regions: [
+        { name: "São Paulo", cities: ["São Paulo"] },
+        { name: "Rio de Janeiro", cities: ["Rio de Janeiro"] },
+      ],
+    },
+    Chile: {
+      regionLabel: "Region",
+      cityLabel: "City",
+      regions: [
+        { name: "Santiago Metropolitan", cities: ["Santiago"] },
+        { name: "Valparaíso", cities: ["Valparaíso"] },
+      ],
+    },
+    Colombia: {
+      regionLabel: "Department",
+      cityLabel: "City",
+      regions: [
+        { name: "Bogotá D.C.", cities: ["Bogotá"] },
+        { name: "Antioquia", cities: ["Medellín"] },
+      ],
+    },
+    Peru: {
+      regionLabel: "Region",
+      cityLabel: "City",
+      regions: [
+        { name: "Lima", cities: ["Lima"] },
+        { name: "Cusco", cities: ["Cusco"] },
+      ],
+    },
+    Uruguay: {
+      regionLabel: "Department",
+      cityLabel: "City",
+      regions: [{ name: "Montevideo", cities: ["Montevideo"] }],
+    },
+  },
     Germany: {
       regionLabel: "State",
       cityLabel: "City",
@@ -304,15 +459,6 @@ const LOCATION_DATA: LocationData = {
       ],
     },
   },
-    "North America": {
-    Bahamas: {
-      regionLabel: "Island / District",
-      cityLabel: "City / Town",
-      regions: [
-        { name: "New Providence", cities: ["Nassau"] },
-        { name: "Grand Bahama", cities: ["Freeport"] },
-      ],
-    },
     Canada: {
       regionLabel: "Province",
       cityLabel: "City",
@@ -560,163 +706,7 @@ const sharedProjectsSeed: SharedProject[] = [
     lat: 30.2672,
     lng: -97.7431,
   },
-    "North America": {
-    Bahamas: {
-      regionLabel: "Island / District",
-      cityLabel: "City / Town",
-      regions: [
-        { name: "New Providence", cities: ["Nassau"] },
-        { name: "Grand Bahama", cities: ["Freeport"] },
-      ],
-    },
-    Canada: {
-      regionLabel: "Province",
-      cityLabel: "City",
-      regions: [
-        { name: "Ontario", cities: ["Toronto", "Ottawa"] },
-        { name: "British Columbia", cities: ["Vancouver", "Victoria"] },
-        { name: "Quebec", cities: ["Montreal"] },
-      ],
-    },
-    "Costa Rica": {
-      regionLabel: "Province",
-      cityLabel: "City",
-      regions: [
-        { name: "San José", cities: ["San José"] },
-        { name: "Guanacaste", cities: ["Liberia", "Tamarindo"] },
-      ],
-    },
-    "Dominican Republic": {
-      regionLabel: "Province",
-      cityLabel: "City",
-      regions: [
-        { name: "Distrito Nacional", cities: ["Santo Domingo"] },
-        { name: "La Altagracia", cities: ["Punta Cana"] },
-      ],
-    },
-    Guatemala: {
-      regionLabel: "Department",
-      cityLabel: "City",
-      regions: [
-        { name: "Guatemala", cities: ["Guatemala City"] },
-        { name: "Sacatepéquez", cities: ["Antigua Guatemala"] },
-      ],
-    },
-    Jamaica: {
-      regionLabel: "Parish",
-      cityLabel: "City / Town",
-      regions: [
-        { name: "Kingston", cities: ["Kingston"] },
-        { name: "Saint James", cities: ["Montego Bay"] },
-      ],
-    },
-    Mexico: {
-      regionLabel: "State",
-      cityLabel: "City",
-      regions: [
-        { name: "Mexico City", cities: ["Mexico City"] },
-        { name: "Jalisco", cities: ["Guadalajara", "Puerto Vallarta"] },
-        { name: "Nuevo León", cities: ["Monterrey"] },
-      ],
-    },
-    Panama: {
-      regionLabel: "Province",
-      cityLabel: "City",
-      regions: [
-        { name: "Panamá", cities: ["Panama City"] },
-        { name: "Chiriquí", cities: ["David", "Boquete"] },
-      ],
-    },
-    "United States": {
-      regionLabel: "State",
-      cityLabel: "City",
-      regions: [
-        { name: "California", cities: ["San Diego", "Los Angeles", "San Francisco", "Joshua Tree"] },
-        { name: "Texas", cities: ["Austin", "Dallas", "Houston"] },
-        { name: "New York", cities: ["New York City", "Buffalo"] },
-        { name: "Florida", cities: ["Miami", "Orlando"] },
-        { name: "Washington", cities: ["Seattle"] },
-        { name: "Oregon", cities: ["Portland"] },
-        { name: "Colorado", cities: ["Denver", "Boulder"] },
-      ],
-    },
-  },
-  Oceania: {
-    Australia: {
-      regionLabel: "State / Territory",
-      cityLabel: "City",
-      regions: [
-        { name: "New South Wales", cities: ["Sydney"] },
-        { name: "Victoria", cities: ["Melbourne"] },
-        { name: "Queensland", cities: ["Brisbane"] },
-      ],
-    },
-    Fiji: {
-      regionLabel: "Division",
-      cityLabel: "City / Town",
-      regions: [
-        { name: "Central Division", cities: ["Suva"] },
-        { name: "Western Division", cities: ["Nadi"] },
-      ],
-    },
-    "New Zealand": {
-      regionLabel: "Region",
-      cityLabel: "City",
-      regions: [
-        { name: "Auckland", cities: ["Auckland"] },
-        { name: "Wellington", cities: ["Wellington"] },
-      ],
-    },
-  },
-  "South America": {
-    Argentina: {
-      regionLabel: "Province",
-      cityLabel: "City",
-      regions: [
-        { name: "Buenos Aires", cities: ["Buenos Aires"] },
-        { name: "Córdoba", cities: ["Córdoba"] },
-      ],
-    },
-    Brazil: {
-      regionLabel: "State",
-      cityLabel: "City",
-      regions: [
-        { name: "São Paulo", cities: ["São Paulo"] },
-        { name: "Rio de Janeiro", cities: ["Rio de Janeiro"] },
-      ],
-    },
-    Chile: {
-      regionLabel: "Region",
-      cityLabel: "City",
-      regions: [
-        { name: "Santiago Metropolitan", cities: ["Santiago"] },
-        { name: "Valparaíso", cities: ["Valparaíso"] },
-      ],
-    },
-    Colombia: {
-      regionLabel: "Department",
-      cityLabel: "City",
-      regions: [
-        { name: "Bogotá D.C.", cities: ["Bogotá"] },
-        { name: "Antioquia", cities: ["Medellín"] },
-      ],
-    },
-    Peru: {
-      regionLabel: "Region",
-      cityLabel: "City",
-      regions: [
-        { name: "Lima", cities: ["Lima"] },
-        { name: "Cusco", cities: ["Cusco"] },
-      ],
-    },
-    Uruguay: {
-      regionLabel: "Department",
-      cityLabel: "City",
-      regions: [{ name: "Montevideo", cities: ["Montevideo"] }],
-    },
-  },
-};
-
+   
 const PLAN_OPTIONS: {
   key: PlanKey;
   title: string;
