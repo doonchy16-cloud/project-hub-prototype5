@@ -3229,4 +3229,734 @@ export default function Prototype5() {
       )}
     </div>
   );
-  
+    const renderSettingsPage = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+          Settings
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+          Adjust prototype display and notification preferences.
+        </p>
+      </div>
+
+      <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-base font-semibold" style={{ color: themeStyles.text }}>
+              Theme mode
+            </p>
+            <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
+              Toggle between light and dark interface states.
+            </p>
+          </div>
+
+          <div className="flex gap-3">
+            <ThemeButton
+              themeStyles={themeStyles}
+              active={theme === "light"}
+              onClick={() => setTheme("light")}
+            >
+              <Sun className="mr-2 inline h-4 w-4" />
+              Light
+            </ThemeButton>
+            <ThemeButton
+              themeStyles={themeStyles}
+              active={theme === "dark"}
+              onClick={() => setTheme("dark")}
+            >
+              <Moon className="mr-2 inline h-4 w-4" />
+              Dark
+            </ThemeButton>
+          </div>
+        </div>
+      </InfoCard>
+
+      <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p className="text-base font-semibold" style={{ color: themeStyles.text }}>
+              Notifications
+            </p>
+            <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
+              Enable or disable in-app activity alerts for the prototype.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setNotificationsEnabled((prev) => !prev)}
+            className="rounded-2xl px-4 py-2.5 text-sm font-medium transition"
+            style={{
+              backgroundColor: notificationsEnabled ? themeStyles.primary : themeStyles.card,
+              color: notificationsEnabled ? themeStyles.primaryText : themeStyles.text,
+              border: `1px solid ${notificationsEnabled ? themeStyles.primary : themeStyles.border}`,
+            }}
+          >
+            {notificationsEnabled ? "Enabled" : "Disabled"}
+          </button>
+        </div>
+      </InfoCard>
+    </div>
+  );
+
+  const renderAccountInfoPage = () => (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+          Account Info
+        </h1>
+        <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+          Prototype account details captured during onboarding.
+        </p>
+      </div>
+
+      <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border p-4" style={{ borderColor: themeStyles.border }}>
+            <p className="text-sm" style={{ color: themeStyles.muted }}>Email</p>
+            <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+              {email || "Not set"}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border p-4" style={{ borderColor: themeStyles.border }}>
+            <p className="text-sm" style={{ color: themeStyles.muted }}>Phone</p>
+            <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+              {phone || "Not set"}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border p-4" style={{ borderColor: themeStyles.border }}>
+            <p className="text-sm" style={{ color: themeStyles.muted }}>Location</p>
+            <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+              {currentLocation || "Not set"}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border p-4" style={{ borderColor: themeStyles.border }}>
+            <p className="text-sm" style={{ color: themeStyles.muted }}>Plan</p>
+            <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+              {planLabel}
+            </p>
+          </div>
+        </div>
+      </InfoCard>
+    </div>
+  );
+
+  const renderAnswersSummaryPage = () => (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+            Answers Summary
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+            Review all adaptive questionnaire answers grouped by category.
+          </p>
+        </div>
+
+        <ThemeButton
+          themeStyles={themeStyles}
+          onClick={() => setPage("questionnaire")}
+        >
+          <PenSquare className="mr-2 inline h-4 w-4" />
+          Edit answers
+        </ThemeButton>
+      </div>
+
+      {categoryOrder.map((category) => {
+        const items = groupedSummary[category];
+        if (!items || items.length === 0) return null;
+
+        return (
+          <InfoCard key={category} themeStyles={themeStyles} className="p-5 md:p-6">
+            <h2 className="text-lg font-semibold" style={{ color: themeStyles.text }}>
+              {category}
+            </h2>
+
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              {items.map((item) => (
+                <div
+                  key={item.id}
+                  className="rounded-2xl border p-4"
+                  style={{
+                    backgroundColor: themeStyles.panel,
+                    borderColor: themeStyles.border,
+                  }}
+                >
+                  <p className="text-sm font-medium" style={{ color: themeStyles.text }}>
+                    {item.label}
+                  </p>
+                  <p className="mt-2 text-sm leading-6" style={{ color: themeStyles.muted }}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </InfoCard>
+        );
+      })}
+    </div>
+  );
+
+  const renderQuestionnairePage = () => (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+            Adaptive questionnaire
+          </h1>
+          <p className="mt-2 text-sm" style={{ color: themeStyles.muted }}>
+            The questions change based on your location and earlier answers.
+          </p>
+        </div>
+
+        <div className="text-right">
+          <p className="text-sm font-medium" style={{ color: themeStyles.text }}>
+            {answeredCount} / {adaptiveQuestions.length} answered
+          </p>
+          <p className="mt-1 text-sm" style={{ color: themeStyles.muted }}>
+            {questionnaireProgressPercent}% complete
+          </p>
+        </div>
+      </div>
+
+      <InfoCard themeStyles={themeStyles} className="p-5 md:p-6">
+        <div className="h-2 overflow-hidden rounded-full" style={{ backgroundColor: themeStyles.pill }}>
+          <div
+            className="h-full rounded-full transition-all"
+            style={{
+              width: `${questionnaireProgressPercent}%`,
+              backgroundColor: themeStyles.primary,
+            }}
+          />
+        </div>
+
+        {currentQuestion ? (
+          <div className="mt-6">
+            <p className="text-xs uppercase tracking-[0.2em]" style={{ color: themeStyles.muted }}>
+              {currentQuestion.category}
+            </p>
+            <h2 className="mt-3 text-xl font-semibold" style={{ color: themeStyles.text }}>
+              {currentQuestion.label}
+            </h2>
+
+            <div className="mt-6">
+              {currentQuestion.type === "select" ? (
+                <div className="grid gap-3 md:grid-cols-2">
+                  {(currentQuestion.options || []).map((option) => {
+                    const active = questionnaireAnswers[currentQuestion.id] === option;
+
+                    return (
+                      <button
+                        key={option}
+                        type="button"
+                        onClick={() => updateAnswer(currentQuestion.id, option)}
+                        className="rounded-2xl border p-4 text-left transition"
+                        style={{
+                          backgroundColor: active ? themeStyles.pill : themeStyles.card,
+                          borderColor: active ? themeStyles.primary : themeStyles.border,
+                        }}
+                      >
+                        <p className="text-sm font-medium" style={{ color: themeStyles.text }}>
+                          {option}
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <ThemeInput
+                  value={questionnaireAnswers[currentQuestion.id] || ""}
+                  onChange={(e) => updateAnswer(currentQuestion.id, e.target.value)}
+                  placeholder={currentQuestion.placeholder}
+                  themeStyles={themeStyles}
+                  multiline
+                />
+              )}
+            </div>
+
+            <div className="mt-6 flex flex-wrap gap-3">
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() => setQuestionnaireStep((prev) => Math.max(prev - 1, 0))}
+              >
+                Previous
+              </ThemeButton>
+
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() =>
+                  setQuestionnaireStep((prev) =>
+                    Math.min(prev + 1, adaptiveQuestions.length - 1)
+                  )
+                }
+              >
+                Next
+              </ThemeButton>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (questionnaireComplete) {
+                    setPage("answers_summary");
+                    addActivity("Completed adaptive questionnaire");
+                  }
+                }}
+                className="rounded-2xl px-5 py-3 text-sm font-medium transition"
+                style={{
+                  backgroundColor: themeStyles.primary,
+                  color: themeStyles.primaryText,
+                  opacity: questionnaireComplete ? 1 : 0.45,
+                  pointerEvents: questionnaireComplete ? "auto" : "none",
+                }}
+              >
+                Finish questionnaire
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </InfoCard>
+    </div>
+  );
+
+  const renderProjectDetailPage = () => {
+    if (!selectedProject) {
+      return (
+        <InfoCard themeStyles={themeStyles} className="p-8 text-center">
+          <p className="text-base font-medium" style={{ color: themeStyles.text }}>
+            No project selected
+          </p>
+        </InfoCard>
+      );
+    }
+
+    const isUserProject = "visibility" in selectedProject;
+
+    return (
+      <div className="space-y-6">
+        <ThemeButton
+          themeStyles={themeStyles}
+          onClick={() => setPage(isUserProject ? "projects" : "projects")}
+        >
+          <ArrowLeft className="mr-2 inline h-4 w-4" />
+          Back to projects
+        </ThemeButton>
+
+        <InfoCard themeStyles={themeStyles} className="p-6 md:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-3xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+                  {selectedProject.title}
+                </h1>
+                <span
+                  className="rounded-full px-2.5 py-1 text-xs font-medium"
+                  style={{ backgroundColor: themeStyles.pill, color: themeStyles.muted }}
+                >
+                  {selectedProject.category}
+                </span>
+              </div>
+
+              <div className="mt-4 flex flex-wrap items-center gap-4 text-sm">
+                <span className="inline-flex items-center gap-1.5" style={{ color: themeStyles.muted }}>
+                  <User className="h-4 w-4" />
+                  {selectedProject.creator}
+                </span>
+                <span className="inline-flex items-center gap-1.5" style={{ color: themeStyles.muted }}>
+                  <MapPin className="h-4 w-4" />
+                  {selectedProject.location}
+                </span>
+              </div>
+            </div>
+
+            {!isUserProject ? (
+              <ThemeButton
+                themeStyles={themeStyles}
+                onClick={() => toggleFavorite(selectedProject.id, selectedProject.title)}
+              >
+                <Heart className="mr-2 inline h-4 w-4" />
+                {favoriteProjectIds.includes(selectedProject.id) ? "Unsave" : "Save"}
+              </ThemeButton>
+            ) : null}
+          </div>
+
+          <div className="mt-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <h2 className="text-lg font-semibold" style={{ color: themeStyles.text }}>
+                About this project
+              </h2>
+              <p className="mt-3 text-sm leading-7" style={{ color: themeStyles.muted }}>
+                {selectedProject.description}
+              </p>
+
+              <div className="mt-6 flex flex-wrap gap-2">
+                {selectedProject.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs"
+                    style={{ backgroundColor: themeStyles.pill, color: themeStyles.muted }}
+                  >
+                    <Tag className="h-3.5 w-3.5" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div
+                className="rounded-2xl border p-4"
+                style={{ backgroundColor: themeStyles.panel, borderColor: themeStyles.border }}
+              >
+                <p className="text-sm" style={{ color: themeStyles.muted }}>Region</p>
+                <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+                  {selectedProject.city}, {selectedProject.state}
+                </p>
+              </div>
+
+              <div
+                className="rounded-2xl border p-4"
+                style={{ backgroundColor: themeStyles.panel, borderColor: themeStyles.border }}
+              >
+                <p className="text-sm" style={{ color: themeStyles.muted }}>Type</p>
+                <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+                  {selectedProject.category}
+                </p>
+              </div>
+
+              {isUserProject ? (
+                <div
+                  className="rounded-2xl border p-4"
+                  style={{ backgroundColor: themeStyles.panel, borderColor: themeStyles.border }}
+                >
+                  <p className="text-sm" style={{ color: themeStyles.muted }}>Visibility</p>
+                  <p className="mt-2 text-base font-semibold" style={{ color: themeStyles.text }}>
+                    {selectedProject.visibility}
+                  </p>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </InfoCard>
+      </div>
+    );
+  };
+
+  let content: ReactNode = null;
+
+  switch (page) {
+    case "home":
+      content = renderHomePage();
+      break;
+    case "favorites":
+      content = renderFavoritesPage();
+      break;
+    case "projects":
+      content = renderProjectsPage();
+      break;
+    case "settings":
+      content = renderSettingsPage();
+      break;
+    case "account_info":
+      content = renderAccountInfoPage();
+      break;
+    case "answers_summary":
+      content = renderAnswersSummaryPage();
+      break;
+    case "questionnaire":
+      content = renderQuestionnairePage();
+      break;
+    case "project_detail":
+      content = renderProjectDetailPage();
+      break;
+    default:
+      content = renderHomePage();
+  }
+
+  if (appStage === "signin_details") {
+    return (
+      <>
+        {leafletAssets}
+        <div style={{ backgroundColor: themeStyles.appBg, minHeight: "100vh" }}>
+          {renderSigninDetails()}
+        </div>
+      </>
+    );
+  }
+
+  if (appStage === "signin_payment") {
+    return (
+      <>
+        {leafletAssets}
+        <div style={{ backgroundColor: themeStyles.appBg, minHeight: "100vh" }}>
+          {renderSigninPayment()}
+        </div>
+      </>
+    );
+  }
+
+  if (appStage === "signin_confirmation") {
+    return (
+      <>
+        {leafletAssets}
+        <div style={{ backgroundColor: themeStyles.appBg, minHeight: "100vh" }}>
+          {renderSigninConfirmation()}
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      {leafletAssets}
+
+      <div style={{ backgroundColor: themeStyles.appBg, minHeight: "100vh" }}>
+        <div className="grid min-h-screen lg:grid-cols-[260px_1fr]">
+          <aside
+            className="border-r px-4 py-6 md:px-6"
+            style={{
+              backgroundColor: themeStyles.panel,
+              borderColor: themeStyles.border,
+            }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-11 w-11 items-center justify-center rounded-2xl font-semibold"
+                style={{ backgroundColor: themeStyles.primary, color: themeStyles.primaryText }}
+              >
+                OG
+              </div>
+              <div>
+                <p className="text-base font-semibold" style={{ color: themeStyles.text }}>
+                  Off Grid
+                </p>
+                <p className="text-sm" style={{ color: themeStyles.muted }}>
+                  Prototype 5
+                </p>
+              </div>
+            </div>
+
+            <nav className="mt-8 space-y-2">
+              {navItems.map((item) => {
+                const active = page === item.key;
+                const Icon = item.icon;
+
+                return (
+                  <button
+                    key={item.key}
+                    type="button"
+                    onClick={() => setPage(item.key)}
+                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-medium transition"
+                    style={{
+                      backgroundColor: active ? themeStyles.pill : "transparent",
+                      color: active ? themeStyles.text : themeStyles.muted,
+                    }}
+                  >
+                    <Icon className="h-4 w-4" />
+                    {item.label}
+                  </button>
+                );
+              })}
+
+              <button
+                type="button"
+                onClick={() => setPage("questionnaire")}
+                className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-left text-sm font-medium transition"
+                style={{
+                  backgroundColor: page === "questionnaire" ? themeStyles.pill : "transparent",
+                  color: page === "questionnaire" ? themeStyles.text : themeStyles.muted,
+                }}
+              >
+                <PenSquare className="h-4 w-4" />
+                Questionnaire
+              </button>
+            </nav>
+          </aside>
+
+          <main className="min-w-0 px-4 py-5 md:px-6 lg:px-8">
+            <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="text-sm" style={{ color: themeStyles.muted }}>
+                  Welcome back
+                </p>
+                <h2 className="text-xl font-semibold tracking-tight" style={{ color: themeStyles.text }}>
+                  {email || "Prototype user"}
+                </h2>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setNotificationsEnabled((prev) => !prev)}
+                  className="rounded-2xl border p-3 transition"
+                  style={{
+                    backgroundColor: themeStyles.card,
+                    borderColor: themeStyles.border,
+                    color: notificationsEnabled ? themeStyles.text : themeStyles.muted,
+                  }}
+                >
+                  <Bell className="h-4 w-4" />
+                </button>
+
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setProfileMenuOpen((prev) => !prev)}
+                    className="flex items-center gap-3 rounded-2xl border px-3 py-2.5 transition"
+                    style={{
+                      backgroundColor: themeStyles.card,
+                      borderColor: themeStyles.border,
+                      color: themeStyles.text,
+                    }}
+                  >
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-xl text-xs font-semibold"
+                      style={{
+                        backgroundColor: themeStyles.pill,
+                        color: themeStyles.text,
+                      }}
+                    >
+                      {initials}
+                    </div>
+                    <span className="hidden text-sm font-medium sm:inline">Profile</span>
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+
+                  {profileMenuOpen ? (
+                    <div
+                      className="absolute right-0 top-[calc(100%+10px)] z-20 w-60 rounded-2xl border p-2"
+                      style={{
+                        backgroundColor: themeStyles.card,
+                        borderColor: themeStyles.border,
+                        boxShadow: themeStyles.shadow,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPage("account_info");
+                          setProfileMenuOpen(false);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition"
+                        style={{ color: themeStyles.text }}
+                      >
+                        <User className="h-4 w-4" />
+                        Account info
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPage("settings");
+                          setProfileMenuOpen(false);
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition"
+                        style={{ color: themeStyles.text }}
+                      >
+                        <Settings className="h-4 w-4" />
+                        Settings
+                      </button>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </header>
+
+            {content}
+          </main>
+        </div>
+
+        {fullscreenMapOpen ? (
+          <div className="fixed inset-0 z-[1000] bg-slate-950/80 p-3 md:p-6">
+            <div className="flex h-full flex-col overflow-hidden rounded-[28px] bg-white shadow-2xl">
+              <div className="flex items-center justify-between border-b px-4 py-3 md:px-6"
+                style={{ borderColor: "#e2e8f0" }}>
+                <div>
+                  <p className="text-base font-semibold text-slate-900">
+                    Project map
+                  </p>
+                  <p className="mt-1 text-sm text-slate-500">
+                    {fullscreenMapProjects.length} visible project{fullscreenMapProjects.length === 1 ? "" : "s"}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setFullscreenMapOpen(false)}
+                  className="rounded-2xl border border-slate-200 bg-white p-2.5 text-slate-700 transition hover:bg-slate-50"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="grid min-h-0 flex-1 lg:grid-cols-[1fr_360px]">
+                <div className="min-h-[420px]">
+                  <LeafletMap
+                    projects={fullscreenMapProjects}
+                    highlightedIds={projectsPageHighlightedIds}
+                    activeProjectId={activeMapProject?.id ?? null}
+                    onSelectProject={(project) => setActiveMapProject(project)}
+                    mode="full"
+                    isReady={leafletReady}
+                  />
+                </div>
+
+                <div className="overflow-y-auto border-l bg-slate-50 p-4 md:p-5"
+                  style={{ borderColor: "#e2e8f0" }}>
+                  <div className="space-y-3">
+                    {fullscreenMapProjects.map((project) => {
+                      const active = activeMapProject?.id === project.id;
+
+                      return (
+                        <button
+                          key={project.id}
+                          type="button"
+                          onClick={() => setActiveMapProject(project)}
+                          className="w-full rounded-2xl border p-4 text-left transition"
+                          style={{
+                            backgroundColor: active ? "#dbeafe" : "#ffffff",
+                            borderColor: active ? "#60a5fa" : "#e2e8f0",
+                          }}
+                        >
+                          <p className="text-sm font-semibold text-slate-900">{project.title}</p>
+                          <p className="mt-1 text-sm text-slate-500">{project.location}</p>
+                          <p className="mt-2 text-xs text-slate-500">{project.category}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {activeMapProject ? (
+                    <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-4">
+                      <p className="text-sm font-semibold text-slate-900">
+                        {activeMapProject.title}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {activeMapProject.description}
+                      </p>
+                      <div className="mt-4">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFullscreenMapOpen(false);
+                            openProjectDetail(activeMapProject);
+                          }}
+                          className="rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-95"
+                        >
+                          Open project
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </>
+  );
+}
