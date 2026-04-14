@@ -969,9 +969,23 @@ function LeafletStyles() {
       .leaflet-container {
         width: 100%;
         height: 100%;
+        position: relative;
+        overflow: hidden;
         background: #dbeafe;
         font-family: inherit;
       }
+
+      .leaflet-map-pane,
+      .leaflet-tile-pane,
+      .leaflet-overlay-pane,
+      .leaflet-shadow-pane,
+      .leaflet-marker-pane,
+      .leaflet-tooltip-pane,
+      .leaflet-popup-pane {
+        position: absolute;
+        inset: 0;
+      }
+
       .leaflet-pane,
       .leaflet-tile,
       .leaflet-marker-icon,
@@ -986,29 +1000,36 @@ function LeafletStyles() {
         left: 0;
         top: 0;
       }
+
       .leaflet-control {
         position: relative;
         z-index: 800;
         pointer-events: auto;
       }
+
       .leaflet-top,
       .leaflet-bottom {
         position: absolute;
         z-index: 900;
         pointer-events: none;
       }
+
       .leaflet-top {
         top: 0;
       }
-      .leaflet-right {
-        right: 0;
-      }
-      .leaflet-left {
-        left: 0;
-      }
+
       .leaflet-bottom {
         bottom: 0;
       }
+
+      .leaflet-left {
+        left: 0;
+      }
+
+      .leaflet-right {
+        right: 0;
+      }
+
       .leaflet-control-zoom {
         margin: 12px;
         border: 1px solid rgba(15, 23, 42, 0.15);
@@ -1016,6 +1037,7 @@ function LeafletStyles() {
         overflow: hidden;
         background: white;
       }
+
       .leaflet-control-zoom a {
         width: 32px;
         height: 32px;
@@ -1026,6 +1048,7 @@ function LeafletStyles() {
         color: #0f172a;
         background: white;
       }
+
       .leaflet-control-attribution {
         margin: 0 8px 8px 0;
         padding: 4px 8px;
@@ -1033,9 +1056,11 @@ function LeafletStyles() {
         border-radius: 8px;
         font-size: 11px;
       }
+
       .leaflet-tile-pane img {
         width: 256px !important;
         height: 256px !important;
+        max-width: none !important;
       }
     `}</style>
   );
@@ -1078,7 +1103,9 @@ function LeafletMap({
 
       layerRef.current = L.layerGroup().addTo(map);
 
-      setTimeout(() => map.invalidateSize(), 50);
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 50);
     };
 
     init();
@@ -1131,7 +1158,9 @@ function LeafletMap({
       map.setView([39.5, -98.35], mode === "mini" ? 3 : 4);
     }
 
-    setTimeout(() => map.invalidateSize(), 30);
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 30);
   }, [projects, highlightedIds, activeProjectId, onSelectProject, mode]);
 
   return <div ref={mapElRef} className="h-full w-full overflow-hidden rounded-2xl" />;
@@ -1275,7 +1304,8 @@ export default function Prototype5() {
     setQuestionnaireStep((prev) => Math.min(prev, Math.max(adaptiveQuestions.length - 1, 0)));
   }, [adaptiveQuestions.length]);
 
-  const currentQuestion = adaptiveQuestions[Math.min(questionnaireStep, adaptiveQuestions.length - 1)];
+  const currentQuestion =
+    adaptiveQuestions[Math.min(questionnaireStep, adaptiveQuestions.length - 1)];
 
   const answeredCount = adaptiveQuestions.filter((question) => {
     const value = questionnaireAnswers[question.id];
@@ -1283,38 +1313,45 @@ export default function Prototype5() {
   }).length;
 
   const questionnaireComplete = answeredCount === adaptiveQuestions.length;
-  const questionnaireProgressPercent = Math.round((answeredCount / adaptiveQuestions.length) * 100);
+  const questionnaireProgressPercent = Math.round(
+    (answeredCount / adaptiveQuestions.length) * 100
+  );
 
   const initials = useMemo(() => {
     if (!email) return "U";
     return email.slice(0, 2).toUpperCase();
   }, [email]);
 
-  const groupedSummary = useMemo<Record<string, { id: string; label: string; value: string }[]>>(() => {
-    const summary: Record<string, { id: string; label: string; value: string }[]> = {};
+  const groupedSummary = useMemo<Record<string, { id: string; label: string; value: string }[]>>(
+    () => {
+      const summary: Record<string, { id: string; label: string; value: string }[]> = {};
 
-    adaptiveQuestions.forEach((question) => {
-      if (!summary[question.category]) summary[question.category] = [];
-      summary[question.category].push({
-        id: question.id,
-        label: question.label,
-        value: questionnaireAnswers[question.id] || "Not answered yet",
+      adaptiveQuestions.forEach((question) => {
+        if (!summary[question.category]) summary[question.category] = [];
+        summary[question.category].push({
+          id: question.id,
+          label: question.label,
+          value: questionnaireAnswers[question.id] || "Not answered yet",
+        });
       });
-    });
 
-    const hasHouseholdSize = (summary["Status"] || []).some((item) => item.id === "household_size");
+      const hasHouseholdSize = (summary["Status"] || []).some(
+        (item) => item.id === "household_size"
+      );
 
-    if (questionnaireAnswers.household_size && !hasHouseholdSize) {
-      if (!summary["Status"]) summary["Status"] = [];
-      summary["Status"].splice(1, 0, {
-        id: "household_size",
-        label: "Household size",
-        value: questionnaireAnswers.household_size,
-      });
-    }
+      if (questionnaireAnswers.household_size && !hasHouseholdSize) {
+        if (!summary["Status"]) summary["Status"] = [];
+        summary["Status"].splice(1, 0, {
+          id: "household_size",
+          label: "Household size",
+          value: questionnaireAnswers.household_size,
+        });
+      }
 
-    return summary;
-  }, [adaptiveQuestions, questionnaireAnswers]);
+      return summary;
+    },
+    [adaptiveQuestions, questionnaireAnswers]
+  );
 
   const recommendedProjects = useMemo<SharedProject[]>(() => {
     if (!questionnaireComplete) return [];
@@ -1580,39 +1617,37 @@ export default function Prototype5() {
           )}
         </div>
 
-        <div>
-          <button onClick={() => openProjectDetail(project)} className="w-full text-left">
-            <h3 className="text-lg font-semibold">{project.title}</h3>
+        <button onClick={() => openProjectDetail(project)} className="w-full text-left">
+          <h3 className="text-lg font-semibold">{project.title}</h3>
 
-            <div className={`mt-2 flex items-center gap-2 text-sm ${mutedTextClass}`}>
-              <MapPin className="h-4 w-4" />
-              <span>{project.location}</span>
-            </div>
-
-            <p className={`mt-3 text-sm leading-6 ${mutedTextClass}`}>
-              {compact
-                ? project.description.slice(0, 120) +
-                  (project.description.length > 120 ? "..." : "")
-                : project.description}
-            </p>
-          </button>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            {project.tags.map((tag) => (
-              <span
-                key={tag}
-                className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs"
-                style={{
-                  backgroundColor: themeStyles.pill,
-                  borderColor: themeStyles.border,
-                  color: themeStyles.text,
-                }}
-              >
-                <Tag className="h-3 w-3" />
-                {tag}
-              </span>
-            ))}
+          <div className={`mt-2 flex items-center gap-2 text-sm ${mutedTextClass}`}>
+            <MapPin className="h-4 w-4" />
+            <span>{project.location}</span>
           </div>
+
+          <p className={`mt-3 text-sm leading-6 ${mutedTextClass}`}>
+            {compact
+              ? project.description.slice(0, 120) +
+                (project.description.length > 120 ? "..." : "")
+              : project.description}
+          </p>
+        </button>
+
+        <div className="mt-4 flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs"
+              style={{
+                backgroundColor: themeStyles.pill,
+                borderColor: themeStyles.border,
+                color: themeStyles.text,
+              }}
+            >
+              <Tag className="h-3 w-3" />
+              {tag}
+            </span>
+          ))}
         </div>
       </InfoCard>
     );
@@ -2001,13 +2036,39 @@ export default function Prototype5() {
                   <p className="font-medium">Card details</p>
                 </div>
                 <div className="grid gap-4">
-                  <ThemeInput value={cardName} onChange={(e) => setCardName(e.target.value)} placeholder="Name on card" themeStyles={themeStyles} />
-                  <ThemeInput value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} placeholder="Card number" themeStyles={themeStyles} />
+                  <ThemeInput
+                    value={cardName}
+                    onChange={(e) => setCardName(e.target.value)}
+                    placeholder="Name on card"
+                    themeStyles={themeStyles}
+                  />
+                  <ThemeInput
+                    value={cardNumber}
+                    onChange={(e) => setCardNumber(e.target.value)}
+                    placeholder="Card number"
+                    themeStyles={themeStyles}
+                  />
                   <div className="grid gap-4 md:grid-cols-2">
-                    <ThemeInput value={expiry} onChange={(e) => setExpiry(e.target.value)} placeholder="MM/YY" themeStyles={themeStyles} />
-                    <ThemeInput value={cvc} onChange={(e) => setCvc(e.target.value)} placeholder="CVC" themeStyles={themeStyles} />
+                    <ThemeInput
+                      value={expiry}
+                      onChange={(e) => setExpiry(e.target.value)}
+                      placeholder="MM/YY"
+                      themeStyles={themeStyles}
+                    />
+                    <ThemeInput
+                      value={cvc}
+                      onChange={(e) => setCvc(e.target.value)}
+                      placeholder="CVC"
+                      themeStyles={themeStyles}
+                    />
                   </div>
-                  <ThemeInput value={billingAddress} onChange={(e) => setBillingAddress(e.target.value)} placeholder="Billing address" themeStyles={themeStyles} multiline />
+                  <ThemeInput
+                    value={billingAddress}
+                    onChange={(e) => setBillingAddress(e.target.value)}
+                    placeholder="Billing address"
+                    themeStyles={themeStyles}
+                    multiline
+                  />
                 </div>
               </div>
 
@@ -2592,7 +2653,11 @@ export default function Prototype5() {
                               ))}
                             </ul>
                             <div className="mt-5 flex justify-end">
-                              <ThemeButton themeStyles={themeStyles} active onClick={() => openProjectDetail(project)}>
+                              <ThemeButton
+                                themeStyles={themeStyles}
+                                active
+                                onClick={() => openProjectDetail(project)}
+                              >
                                 See full project details
                               </ThemeButton>
                             </div>
@@ -2626,7 +2691,8 @@ export default function Prototype5() {
                           className="rounded-full px-3 py-1 text-xs font-medium"
                           style={{ backgroundColor: themeStyles.pill, color: themeStyles.text }}
                         >
-                          {publicProjectsFiltered.length} result{publicProjectsFiltered.length === 1 ? "" : "s"}
+                          {publicProjectsFiltered.length} result
+                          {publicProjectsFiltered.length === 1 ? "" : "s"}
                         </span>
                       )}
                     </div>
@@ -2674,19 +2740,31 @@ export default function Prototype5() {
                       <div className="grid gap-4 md:grid-cols-2">
                         <div>
                           <label className="mb-2 block text-sm font-medium">Title</label>
-                          <ThemeInput value={projectTitle} onChange={(e) => setProjectTitle(e.target.value)} placeholder="Enter project title" themeStyles={themeStyles} />
+                          <ThemeInput
+                            value={projectTitle}
+                            onChange={(e) => setProjectTitle(e.target.value)}
+                            placeholder="Enter project title"
+                            themeStyles={themeStyles}
+                          />
                         </div>
 
                         <div>
                           <label className="mb-2 block text-sm font-medium">Location</label>
-                          <ThemeInput value={projectLocation} onChange={(e) => setProjectLocation(e.target.value)} placeholder="Enter project location" themeStyles={themeStyles} />
+                          <ThemeInput
+                            value={projectLocation}
+                            onChange={(e) => setProjectLocation(e.target.value)}
+                            placeholder="Enter project location"
+                            themeStyles={themeStyles}
+                          />
                         </div>
 
                         <div>
                           <label className="mb-2 block text-sm font-medium">Category</label>
                           <select
                             value={projectCategory}
-                            onChange={(e) => setProjectCategory(e.target.value as (typeof myProjectCategories)[number])}
+                            onChange={(e) =>
+                              setProjectCategory(e.target.value as (typeof myProjectCategories)[number])
+                            }
                             className="w-full rounded-2xl border px-4 py-3 text-sm outline-none"
                             style={{
                               backgroundColor: themeStyles.panel,
@@ -2706,7 +2784,9 @@ export default function Prototype5() {
                           <label className="mb-2 block text-sm font-medium">Visibility</label>
                           <select
                             value={projectVisibility}
-                            onChange={(e) => setProjectVisibility(e.target.value as "private" | "public")}
+                            onChange={(e) =>
+                              setProjectVisibility(e.target.value as "private" | "public")
+                            }
                             className="w-full rounded-2xl border px-4 py-3 text-sm outline-none"
                             style={{
                               backgroundColor: themeStyles.panel,
@@ -2721,12 +2801,23 @@ export default function Prototype5() {
 
                         <div className="md:col-span-2">
                           <label className="mb-2 block text-sm font-medium">Description</label>
-                          <ThemeInput value={projectDescription} onChange={(e) => setProjectDescription(e.target.value)} placeholder="Describe the project" themeStyles={themeStyles} multiline />
+                          <ThemeInput
+                            value={projectDescription}
+                            onChange={(e) => setProjectDescription(e.target.value)}
+                            placeholder="Describe the project"
+                            themeStyles={themeStyles}
+                            multiline
+                          />
                         </div>
 
                         <div className="md:col-span-2">
                           <label className="mb-2 block text-sm font-medium">Tags</label>
-                          <ThemeInput value={projectTags} onChange={(e) => setProjectTags(e.target.value)} placeholder="Comma-separated tags" themeStyles={themeStyles} />
+                          <ThemeInput
+                            value={projectTags}
+                            onChange={(e) => setProjectTags(e.target.value)}
+                            placeholder="Comma-separated tags"
+                            themeStyles={themeStyles}
+                          />
                         </div>
                       </div>
 
@@ -2740,7 +2831,10 @@ export default function Prototype5() {
 
                   {userProjects.length === 0 ? (
                     <InfoCard themeStyles={themeStyles} className="p-10 text-center">
-                      <FolderKanban className="mx-auto h-10 w-10" style={{ color: themeStyles.muted }} />
+                      <FolderKanban
+                        className="mx-auto h-10 w-10"
+                        style={{ color: themeStyles.muted }}
+                      />
                       <h3 className="mt-4 text-xl font-semibold">No projects yet</h3>
                       <p className={`mt-2 text-sm leading-6 ${mutedTextClass}`}>
                         Create your first project to start building your workspace.
@@ -2769,7 +2863,11 @@ export default function Prototype5() {
                                 color: themeStyles.text,
                               }}
                             >
-                              {project.visibility === "public" ? <Globe className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                              {project.visibility === "public" ? (
+                                <Globe className="h-3 w-3" />
+                              ) : (
+                                <Lock className="h-3 w-3" />
+                              )}
                               {project.visibility}
                             </span>
                           </div>
@@ -2821,7 +2919,9 @@ export default function Prototype5() {
               <div className="mb-5 flex items-center justify-between gap-4">
                 <div>
                   <h1 className="text-3xl font-semibold">Your favorites</h1>
-                  <p className={`mt-2 text-sm leading-6 ${mutedTextClass}`}>Every saved project appears here.</p>
+                  <p className={`mt-2 text-sm leading-6 ${mutedTextClass}`}>
+                    Every saved project appears here.
+                  </p>
                 </div>
                 <Heart className="h-6 w-6" style={{ color: themeStyles.primary }} />
               </div>
@@ -2945,8 +3045,14 @@ export default function Prototype5() {
                         active={favoriteProjectIds.includes(selectedProject.id)}
                         onClick={() => toggleFavorite(selectedProject.id, selectedProject.title)}
                       >
-                        <Heart className={`mr-2 inline h-4 w-4 ${favoriteProjectIds.includes(selectedProject.id) ? "fill-current" : ""}`} />
-                        {favoriteProjectIds.includes(selectedProject.id) ? "Saved" : "Save to favorites"}
+                        <Heart
+                          className={`mr-2 inline h-4 w-4 ${
+                            favoriteProjectIds.includes(selectedProject.id) ? "fill-current" : ""
+                          }`}
+                        />
+                        {favoriteProjectIds.includes(selectedProject.id)
+                          ? "Saved"
+                          : "Save to favorites"}
                       </ThemeButton>
                     )}
                   </div>
@@ -2982,7 +3088,11 @@ export default function Prototype5() {
                     active
                     onClick={() => setTheme(isDark ? "light" : "dark")}
                   >
-                    {isDark ? <Sun className="mr-2 inline h-4 w-4" /> : <Moon className="mr-2 inline h-4 w-4" />}
+                    {isDark ? (
+                      <Sun className="mr-2 inline h-4 w-4" />
+                    ) : (
+                      <Moon className="mr-2 inline h-4 w-4" />
+                    )}
                     {isDark ? "Switch to light" : "Switch to dark"}
                   </ThemeButton>
                 </div>
@@ -3046,7 +3156,11 @@ export default function Prototype5() {
                     </div>
                   </div>
 
-                  <ThemeButton themeStyles={themeStyles} active onClick={() => setPage("questionnaire")}>
+                  <ThemeButton
+                    themeStyles={themeStyles}
+                    active
+                    onClick={() => setPage("questionnaire")}
+                  >
                     {questionnaireComplete ? "Edit questionnaire" : "Continue questionnaire"}
                   </ThemeButton>
                 </div>
@@ -3120,7 +3234,9 @@ export default function Prototype5() {
                     {categoryOrder.map((category) => {
                       const total = adaptiveQuestions.filter((item) => item.category === category).length;
                       const done = adaptiveQuestions.filter(
-                        (item) => item.category === category && String(questionnaireAnswers[item.id] || "").trim()
+                        (item) =>
+                          item.category === category &&
+                          String(questionnaireAnswers[item.id] || "").trim()
                       ).length;
 
                       return (
@@ -3142,7 +3258,11 @@ export default function Prototype5() {
                   </div>
 
                   <div className="mt-5 flex flex-wrap gap-3">
-                    <ThemeButton themeStyles={themeStyles} active onClick={() => setPage("questionnaire")}>
+                    <ThemeButton
+                      themeStyles={themeStyles}
+                      active
+                      onClick={() => setPage("questionnaire")}
+                    >
                       {questionnaireComplete ? "Edit questionnaire" : "Start questionnaire"}
                     </ThemeButton>
                     <ThemeButton themeStyles={themeStyles} onClick={() => setPage("answers_summary")}>
@@ -3165,7 +3285,11 @@ export default function Prototype5() {
                     </p>
                   </div>
 
-                  <ThemeButton themeStyles={themeStyles} active onClick={() => setPage("questionnaire")}>
+                  <ThemeButton
+                    themeStyles={themeStyles}
+                    active
+                    onClick={() => setPage("questionnaire")}
+                  >
                     <PenSquare className="mr-2 inline h-4 w-4" />
                     Edit questionnaire
                   </ThemeButton>
