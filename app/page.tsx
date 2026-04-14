@@ -295,7 +295,7 @@ const LOCATION_DATA: LocationData = {
         { name: "Skåne County", cities: ["Malmö"] },
       ],
     },
-    "United Kingdom": {
+        "United Kingdom": {
       regionLabel: "Nation / Region",
       cityLabel: "City",
       regions: [
@@ -304,7 +304,7 @@ const LOCATION_DATA: LocationData = {
       ],
     },
   },
-    "North America": {
+  "North America": {
     Bahamas: {
       regionLabel: "Island / District",
       cityLabel: "City / Town",
