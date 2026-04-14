@@ -459,6 +459,32 @@ const LOCATION_DATA: LocationData = {
   },
 };
 
+const PLAN_OPTIONS: {
+  key: PlanKey;
+  title: string;
+  price: string;
+  subtitle: string;
+}[] = [
+  {
+    key: "starter",
+    title: "Starter Plan",
+    price: "$1",
+    subtitle: "One-time starter access for prototype testing.",
+  },
+  {
+    key: "pro",
+    title: "Pro Plan",
+    price: "$10/month",
+    subtitle: "Monthly plan for extended access and future premium features.",
+  },
+  {
+    key: "skip",
+    title: "Skip for Now",
+    price: "$0 now",
+    subtitle: "Continue through the prototype without entering payment details.",
+  },
+];
+
 const sharedProjectsSeed: SharedProject[] = [
   {
     id: 1,
@@ -1732,10 +1758,7 @@ export default function Prototype5() {
 
   if (appStage === "signin_details") {
     return (
-      <div
-        className={`min-h-screen ${shellTextClass}`}
-        style={{ backgroundColor: themeStyles.appBg }}
-      >
+      <div className={`min-h-screen ${shellTextClass}`} style={{ backgroundColor: themeStyles.appBg }}>
         <div className="mx-auto grid min-h-screen max-w-6xl gap-8 px-6 py-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">
             <div
@@ -1900,10 +1923,7 @@ export default function Prototype5() {
 
   if (appStage === "signin_payment") {
     return (
-      <div
-        className={`min-h-screen ${shellTextClass}`}
-        style={{ backgroundColor: themeStyles.appBg }}
-      >
+      <div className={`min-h-screen ${shellTextClass}`} style={{ backgroundColor: themeStyles.appBg }}>
         <div className="mx-auto grid min-h-screen max-w-6xl gap-8 px-6 py-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-6">
             <div
@@ -2026,10 +2046,7 @@ export default function Prototype5() {
 
   if (appStage === "signin_confirmation") {
     return (
-      <div
-        className={`min-h-screen ${shellTextClass}`}
-        style={{ backgroundColor: themeStyles.appBg }}
-      >
+      <div className={`min-h-screen ${shellTextClass}`} style={{ backgroundColor: themeStyles.appBg }}>
         <div className="mx-auto flex min-h-screen max-w-3xl items-center px-6 py-10">
           <InfoCard themeStyles={themeStyles} className="w-full p-8 text-center">
             <div
